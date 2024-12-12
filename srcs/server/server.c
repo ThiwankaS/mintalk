@@ -13,7 +13,17 @@ void handel_signal(int signum)
 
 int main()
 {
-	signal(SIGINT,handel_signal);
+	struct sigaction sa;
+
+	sa.sa_handler = handel_signal;
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
+
+	if(sigaction(SIGINT,&sa,NULL)== -1)
+	{
+		printf("An Eror occured!\n");
+	}
+
 	printf("Press Ctrl + C to stop this program!\n");
 	while(keep_running)
 	{
