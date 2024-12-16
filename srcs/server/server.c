@@ -13,7 +13,10 @@ void handel_signal(int signum)
 
 int main()
 {
-	struct sigaction sa;
+	struct	sigaction sa;
+	int		pid;
+
+	pid = getpid();
 
 	sa.sa_handler = handel_signal;
 	sa.sa_flags = 0;
@@ -23,7 +26,7 @@ int main()
 	{
 		printf("An Eror occured!\n");
 	}
-
+	printf("PID : %d start to run ...\n", pid);
 	printf("Press Ctrl + C to stop this program!\n");
 	while(keep_running)
 	{
