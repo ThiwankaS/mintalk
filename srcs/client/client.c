@@ -6,15 +6,21 @@
 int main()
 {
 	int pid;
-	printf("Enter the PID to end the program : ");
+	int count = 0;
+	char *str;
+
+	printf("Enter the PID of the program : ");
 	scanf("%d", &pid);
-	if(kill(pid, SIGINT) == 0)
+	printf("Enter the message (Binary) : \n");
+	scanf("%s", str);
+	while(str && str[count])
 	{
-		printf("Successfull terminate the program. PID : %d\n", pid);
-	}
-	else
-	{
-		printf("Program terminating unsuccesfull PID : %d\n", pid);
+		if(str[count] - '0' == 1)
+			kill(pid,SIGUSR1);
+		if(str[count] - '0' == 0)
+			kill(pid,SIGUSR2);
+		usleep(10000);
+		count++;
 	}
 	return (0);
 }

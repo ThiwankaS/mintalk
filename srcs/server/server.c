@@ -1,14 +1,25 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
-
-
-volatile int keep_running = 1;
+#include <stdlib.h>
 
 void handel_signal(int signum)
 {
-	printf("Caught signal : %d\n", signum);
-	keep_running = 0;
+	if(signum == SIGUSR1)
+	{
+		printf("1");
+		fflush(stdout);
+	}
+	else if( signum == SIGUSR2)
+	{
+		printf("0");
+		fflush(stdout);
+	}
+	else if( signum == SIGINT)
+	{
+		printf("\n Server terminating ... !\n");
+		exit(0);
+	}
 }
 
 int main()
@@ -22,17 +33,16 @@ int main()
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
 
-	if(sigaction(SIGINT,&sa,NULL)== -1)
+	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
+	sigaction(SIGINT, &sa, NULL);
+
+	printf("Srever program (PID) : %d\n ", pid);
+	printf("waiting for the binary message... \n");
+
+	while(1)
 	{
-		printf("An Eror occured!\n");
+		pause();
 	}
-	printf("PID : %d start to run ...\n", pid);
-	printf("Press Ctrl + C to stop this program!\n");
-	while(keep_running)
-	{
-		printf("The program is still running....\n");
-		sleep(1);
-	}
-	printf("Program terminated.\n");
 	return (0);
 }
