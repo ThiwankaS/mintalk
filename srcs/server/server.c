@@ -17,7 +17,8 @@ void handel_signal(int signum)
 	}
 	else if( signum == SIGINT)
 	{
-		printf("\n Server terminating ... !\n");
+		printf("\n");
+		fflush(stdout);
 		exit(0);
 	}
 }
