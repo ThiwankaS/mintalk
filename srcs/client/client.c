@@ -22,7 +22,7 @@ char *ft_encode(unsigned char ch)
 					result[count] = '1';
 				else
 					result[count] = '0';
-				mask >>= 1;
+				mask = mask >> 1;
 				count++;
 			}
 	result[count] = '\0';
@@ -36,21 +36,20 @@ int main(int argc, char *argv[])
 	char *str;
 	char *msg;
 
-	pid = atoi(argv[1]);
-	str = argv[2];
+	pid = atoi(argv[2]);
+	str = argv[1];
 
 	while(str && str[count])
 	{
 		msg = ft_encode(str[count]);
 		int step = 0;
-		printf("msg : %s\n", msg);
 		while(msg && msg[step])
 		{
 			if(msg[step] - '0' == 1)
 				kill(pid,SIGUSR1);
 			if(msg[step] - '0' == 0)
 				kill(pid,SIGUSR2);
-			usleep(10000);
+			usleep(50);
 			step++;
 		}
 		free(msg);
