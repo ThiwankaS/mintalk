@@ -23,6 +23,10 @@ void handel_signal(int signum)
 {
 	static int count = 0;
 	static char msg[9];
+	clock_t start, end;
+    double cpu_time_used;
+
+	start = clock();
 
 	if(signum == SIGUSR1)
 	{
@@ -37,6 +41,9 @@ void handel_signal(int signum)
 	else if( signum == SIGINT)
 	{
 		msg[count + 1] = '\0';
+		end = clock();
+		cpu_time_used = (double)((end-start)/CLOCKS_PER_SEC);
+		printf("Execution time: %f seconds\n", cpu_time_used);
 		exit(0);
 	}
 	if(count == 8)
@@ -52,8 +59,7 @@ int main()
 {
 	struct	sigaction sa;
 	int		pid;
-	clock_t start, end;
-    double cpu_time_used;
+
 
 	pid = getpid();
 
@@ -70,11 +76,9 @@ int main()
 
 	while(1)
 	{
-		start = clock();
+
 		pause();
-		end = clock();
+
 	}
-	cpu_time_used = (double)((end-start)/CLOCKS_PER_SEC);
-	printf("Execution time: %f seconds\n", cpu_time_used);
 	return (0);
 }
