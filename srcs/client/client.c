@@ -29,16 +29,33 @@ char *ft_encode(unsigned char ch)
 	return (result);
 }
 
+void	ft_msg(int signum)
+{
+	if(signum == SIGUSR1)
+		printf("Message sucessfully delivered!\n");
+}
+
+void ft_signal(void)
+{
+	struct	sigaction sa;
+	memset(&sa,0,sizeof(sa));
+	sa.sa_handler = &ft_msg;
+	sa.sa_flags = SA_SIGINFO;
+	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
+}
+
 int main(int argc, char *argv[])
 {
 	int pid;
 	int count = 0;
+
 	char *str;
 	char *msg;
 
 	pid = atoi(argv[2]);
 	str = argv[1];
-
+	ft_signal();
 	while(str && str[count])
 	{
 		msg = ft_encode(str[count]);
@@ -49,7 +66,7 @@ int main(int argc, char *argv[])
 				kill(pid,SIGUSR1);
 			if(msg[step] - '0' == 0)
 				kill(pid,SIGUSR2);
-			usleep(50);
+			usleep(1000);
 			step++;
 		}
 		free(msg);
