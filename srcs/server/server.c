@@ -19,14 +19,10 @@ int ft_decode(char *str)
 }
 
 
-void handel_signal(int signum)
+void handel_signal(int signum, siginfo_t *info, void *p)
 {
 	static int count = 0;
 	static char msg[9];
-	clock_t start, end;
-    double cpu_time_used;
-
-	start = clock();
 
 	if(signum == SIGUSR1)
 	{
@@ -40,17 +36,14 @@ void handel_signal(int signum)
 	}
 	else if( signum == SIGINT)
 	{
-		msg[count + 1] = '\0';
-		end = clock();
-		cpu_time_used = (double)((end-start)/CLOCKS_PER_SEC);
-		printf("Execution time: %f seconds\n", cpu_time_used);
-		exit(0);
+		printf("\n");
 	}
 	if(count == 8)
 	{
 		msg[count + 1] = '\0';
 		char ch = ft_decode(msg);
 		printf("%c", ch);
+		kill(info->si_pid,SIGUSR1);
 		count = 0;
 	}
 }
@@ -63,8 +56,9 @@ int main()
 
 	pid = getpid();
 
-	sa.sa_handler = handel_signal;
-	sa.sa_flags = 0;
+	memset(&sa,0,sizeof(sa));
+	sa.sa_sigaction = handel_signal;
+	sa.sa_flags |= SA_SIGINFO;
 	sigemptyset(&sa.sa_mask);
 
 	sigaction(SIGUSR1, &sa, NULL);
@@ -76,9 +70,7 @@ int main()
 
 	while(1)
 	{
-
 		pause();
-
 	}
 	return (0);
 }
