@@ -1,14 +1,35 @@
-files = file1 file2
+CMD = cc
+CFLAGS = -Wall -Wextra -Werror -I.
 
-some_file : $(files)
-	echo "look in to this variable" $(files)
-	touch some_file
+SRC_CLIENT = src_client/client.c utils.c
+SRC_SERVER = src_server/server.c utils.c
 
-file1:
-	touch file1.txt
+OBJ_CLIENT = $(SRC_CLIENT:.c=.o)
+OBJ_SERVER = $(SRC_SERVER:.c=.o)
 
-file2:
-	touch file2.txt
+TARGET_CLIENT = client
+TARGET_SERVER = server
+
+HEADER = minitalk.h
+
+all: $(TARGET_CLIENT) $(TARGET_SERVER)
+
+$(TARGET_CLIENT): $(OBJ_CLIENT)
+	$(CMD) $(CFLAGS) -o $@ $^
+
+$(TARGET_SERVER) : $(OBJ_SERVER)
+	$(CMD) $(CFLAGS) -o $@ $^
+
+%.o: %.c
+	$(CMD) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf some_file file1.txt file2.txt
+	rm -f $(OBJ_CLIENT) $(OBJ_SERVER)
+
+fclean: clean
+	rm -f $(TARGET_CLIENT) $(TARGET_SERVER)
+
+re: fclean all
+
+.PHONY: all clean fclean re
+
