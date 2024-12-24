@@ -46,8 +46,6 @@ void	handel_signal(int signum)
 		msg[count] = '0';
 		count++;
 	}
-	if (signum == SIGINT)
-		printf("\n");
 	if (count == SIZE)
 	{
 		msg[count] = '\0';
@@ -61,6 +59,7 @@ int	main(void)
 {
 	struct sigaction	sa;
 	int					pid;
+	static int		clock;
 
 	pid = getpid();
 	memset(&sa, 0, sizeof(sa));
@@ -68,12 +67,13 @@ int	main(void)
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
-	sigaction(SIGINT, &sa, NULL);
 	printf("Srever program (PID) : %d\n ", pid);
 	printf("waiting for the binary message... \n");
 	while (1)
 	{
 		pause();
+		printf("clock : %d\n", clock);
+		clock++;
 	}
 	return (0);
 }
