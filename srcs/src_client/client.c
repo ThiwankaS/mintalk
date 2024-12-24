@@ -67,7 +67,6 @@ void	ft_send_msg(int pid, char *str)
 		free(msg);
 		count++;
 	}
-	kill(pid, SIGINT);
 }
 
 int	main(int argc, char *argv[])
